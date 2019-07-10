@@ -14,11 +14,8 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
-    @Query("SELECT * FROM Task ")
+    @Query("SELECT * FROM Task ORDER BY id DESC")
    LiveData<List<Task>> getAll();
-
-    @Query("SELECT * FROM Task WHERE id = :id")
-     List<Task> getById (long id);
 
     @Update
     void update (Task task);
