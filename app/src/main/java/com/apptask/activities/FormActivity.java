@@ -82,7 +82,6 @@ public class FormActivity extends AppCompatActivity {
         if (task != null) {
             task.setTitle(title);
             task.setDescription(description);
-            task.getId();
             App.getInstance().getDatabase().taskDao().update(task);
         } else {
             Task task = new Task();
