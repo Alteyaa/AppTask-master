@@ -4,6 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 @Entity
 public class Task implements Serializable {
@@ -45,6 +46,17 @@ public class Task implements Serializable {
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
-
     }
+        public static final Comparator<Task> BY_TITLE_ALPHABETICALLY = new Comparator<Task>() {
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        };
+    public static final Comparator<Task> BY_TITLE_DESC = new Comparator<Task>() {
+        @Override
+        public int compare(Task o1, Task o2) {
+            return o1.getTitle().compareTo(o2.getTitle());
+        }
+    };
 }

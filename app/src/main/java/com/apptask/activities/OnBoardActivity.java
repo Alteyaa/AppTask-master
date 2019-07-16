@@ -68,7 +68,6 @@ public class OnBoardActivity extends AppCompatActivity implements View.OnClickLi
         mStepper.setViewPager(mViewPager, adapter.getCount());
     }
 
-
     private void onPageChanged(int position) {
         String btnTextNext = "Next";
         if (position == 2) {
@@ -90,7 +89,7 @@ public class OnBoardActivity extends AppCompatActivity implements View.OnClickLi
     private void onPageSkip(int position){
         String btnTextFinish = "Skip";
         if(position==2) {
-            btnTextFinish = "";
+            btnTextFinish = " ";
         }
         mSkipBtn.setText(btnTextFinish);
     }

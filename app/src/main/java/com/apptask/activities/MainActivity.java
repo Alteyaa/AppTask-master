@@ -25,6 +25,7 @@ import com.apptask.App;
 import com.apptask.R;
 import com.apptask.TaskAdapter;
 import com.apptask.model.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +38,13 @@ public class MainActivity extends AppCompatActivity
     TaskAdapter taskAdapter;
     List<Task> list;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
+
         boolean isShown = preferences.getBoolean("isShown", false);
 
         if (!isShown) {
@@ -49,6 +52,12 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
+        boolean ifRegistered = preferences.getBoolean("ifRegistered", false);
+
+        if (!ifRegistered) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
         setContentView(R.layout.activity_main);
 
 
@@ -74,7 +83,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initList() {
-        list = new ArrayList<>();
+        list = new ArrayList<>() ;
         recyclerView = findViewById(R.id.recycler_my);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
@@ -82,13 +91,13 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(taskAdapter);
         App.getInstance().getDatabase().taskDao().getAll().
                 observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable List<Task> task) {
-                list.clear();
-                list.addAll(task);
-                taskAdapter.notifyDataSetChanged();
-            }
-        });
+                    @Override
+                    public void onChanged(@Nullable List<Task> task) {
+                        list.clear();
+                        list.addAll(task);
+                        taskAdapter.notifyDataSetChanged();
+                    }
+                });
 
 
         taskAdapter.setClickListener(new TaskAdapter.ClickListener() {
@@ -143,19 +152,39 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
 
         int id = item.getItemId();
 
-
         if (id == R.id.action_settings) {
+
+
             return true;
+
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+  /*  private void showSortDialog() {
+        String [] options = {"Ascending", "Descending"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sort by");
+        builder.setIcon(R.drawable.ic_sort_by_alpha);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    SharedPreferences.Editor editor = pref.edit()
+                }
+
+                 if (which == 1){
+
+                 }
+            }
+        });
+        builder.create().show();
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -182,22 +211,15 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 100) {
-            if (resultCode == RESULT_OK) {
-                App.getInstance().getDatabase().taskDao().getAll().observe(this,
-                        new Observer<List<Task>> () {
-                            @Override
-                            public void onChanged(@Nullable List<Task> task) {
-                                list.clear();
-                                list.addAll(task);
-                                taskAdapter.notifyDataSetChanged();
-                            }
-                        });
+    public void onClickExit(MenuItem item) {
+
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
-        }
     }
-}
+
 
 
